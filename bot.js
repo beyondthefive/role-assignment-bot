@@ -86,22 +86,18 @@ const updateChannel = (message, channel, departments = false) => {
 									.get(config.guildID)
 									.members.fetch(c)
 									.then(async () => {
-										// Await msg.channel.send("<@" + c + ">");
+										perms.push({
+											id: c,
+											allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+										});
+										// Await message.channel.send("<@" + c + ">");
 									})
 									.catch(async () => {
-										await message.channel.send(combined.length);
 										combined.splice(combined.indexOf(c), 1);
 										await message.channel.send(
-											'<@' + c + '> is NOT in the server. \n' + combined.length
+											'<@' + c + '> is NOT in the server.'
 										);
 									});
-							});
-
-							combined.map(p => {
-								perms.push({
-									id: p,
-									allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
-								});
 							});
 
 							if (departments) {
@@ -111,7 +107,6 @@ const updateChannel = (message, channel, departments = false) => {
 								});
 							}
 
-							// Await channel.setRateLimitPerUser(1800);
 							await channelSelect
 								.overwritePermissions(perms)
 								.then(async () => {
