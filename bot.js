@@ -56,7 +56,7 @@ const updateChannel = (message, channel, departments = false) => {
 						if (i == channel) {
 							const channelSelect = await client.channels.fetch(i);
 
-							const perms = [
+							let perms = [
 								{
 									id: config.modRole,
 									allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
@@ -90,7 +90,6 @@ const updateChannel = (message, channel, departments = false) => {
 											id: c,
 											allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
 										});
-										// Await message.channel.send("<@" + c + ">");
 									})
 									.catch(async () => {
 										combined.splice(combined.indexOf(c), 1);
@@ -107,27 +106,98 @@ const updateChannel = (message, channel, departments = false) => {
 								});
 							}
 
-							await channelSelect
-								.overwritePermissions(perms)
-								.then(async () => {
-									return message.channel.send(
-										'Permissions updated for ' + channelSelect.toString()
-									);
-								})
-								.catch(async error => {
-									console.log(error);
-									// Console.log(perms);
-									if (channelSelect.permissionOverwrites.size != perms.length) {
+							if (perms.length < 100) {
+								await channelSelect
+									.overwritePermissions(perms)
+									.then(async () => {
 										return message.channel.send(
-											'Error updating permissions for ' +
-                        channelSelect.toString() +
-                        '\nChannel has ' +
-                        channelSelect.permissionOverwrites.size +
-                        ' perms overwrites, it should have ' +
-                        perms.length
+											'Permissions updated for ' + channelSelect.toString()
 										);
-									}
+									})
+									.catch(async error => {
+										console.log(error);
+										// Console.log(perms);
+										if (
+											channelSelect.permissionOverwrites.size != perms.length
+										) {
+											return message.channel.send(
+												'Error updating permissions for ' +
+                          channelSelect.toString() +
+                          '\nChannel has ' +
+                          channelSelect.permissionOverwrites.size +
+                          ' perms overwrites, it should have ' +
+                          perms.length
+											);
+										}
+									});
+							} else {
+								const channelSelect = await client.channels.fetch(i);
+								await channelSelect
+									.overwritePermissions([
+										{
+											id: config.modRole,
+											allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+										},
+										{
+											id: config.mutedRole,
+											deny: ['SEND_MESSAGES', 'SPEAK', 'ADD_REACTIONS']
+										},
+										{
+											id: config.everyoneRole,
+											deny: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+										}
+									])
+									.then(async () => {
+										await message.channel.send(
+											'Base permissions updated for ' + channelSelect.toString()
+										);
+									})
+									.catch(async error => {
+										console.log(error);
+
+										if (
+											channelSelect.permissionOverwrites.size != perms.length
+										) {
+											await message.channel.send(
+												'Error updating base permissions for ' +
+                          channelSelect.toString()
+											);
+										}
+									});
+
+								message.channel.send(
+									(await channelSelect.toString()) +
+                    ' has over 100 permissions overwrites, using alternative method.'
+								);
+								perms = perms.slice(4, perms.length);
+								perms.map(async p => {
+									await channelSelect
+										.updateOverwrite(p.id, {
+											VIEW_CHANNEL: true,
+											SEND_MESSAGES: true
+										})
+										.then(async () => {
+											/* Await message.channel.send(
+                        "Gave permissions to `" +
+                          p.id +
+                          "` in " +
+                          channelSelect.toString()
+					  ) */
+										})
+										.catch(async () =>
+											message.channel.send(
+												'ERROR giving permissions to `' +
+                          p.id +
+                          '` in ' +
+                          channelSelect.toString()
+											)
+										);
 								});
+
+								await message.channel.send(
+									'Permissions updated for ' + channelSelect.toString()
+								);
+							}
 						}
 					});
 				});
