@@ -169,7 +169,7 @@ const updateChannel = (message, channel, departments = false) => {
 									(await channelSelect.toString()) +
                     ' has over 100 permissions overwrites, using alternative method.'
 								);
-								perms = perms.slice(4, perms.length);
+								perms = perms.slice(4, perms.length + 1);
 								perms.map(async p => {
 									await channelSelect
 										.updateOverwrite(p.id, {
