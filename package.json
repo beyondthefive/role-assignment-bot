@@ -1,7 +1,8 @@
 {
-  "name": "bt5-bot",
+  "name": "role-assignment-bot",
   "scripts": {
-    "start": "nodemon bot.js",
+    "dev": "nodemon bot.js",
+    "start": "nod bot.js",
     "lint": "xo --fix"
   },
   "main": "bot.js",
