@@ -133,20 +133,7 @@ const updateChannel = (message, channel, departments = false) => {
 							} else {
 								const channelSelect = await client.channels.fetch(i);
 								await channelSelect
-									.overwritePermissions([
-										{
-											id: config.modRole,
-											allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
-										},
-										{
-											id: config.mutedRole,
-											deny: ['SEND_MESSAGES', 'SPEAK', 'ADD_REACTIONS']
-										},
-										{
-											id: config.everyoneRole,
-											deny: ['VIEW_CHANNEL', 'SEND_MESSAGES']
-										}
-									])
+									.overwritePermissions(perms.slice(0, 100))
 									.then(async () => {
 										await message.channel.send(
 											'Base permissions updated for ' + channelSelect.toString()
@@ -169,7 +156,7 @@ const updateChannel = (message, channel, departments = false) => {
 									(await channelSelect.toString()) +
                     ' has over 100 permissions overwrites, using alternative method.'
 								);
-								perms = perms.slice(4, perms.length + 1);
+								perms = perms.slice(100);
 								perms.map(async p => {
 									await channelSelect
 										.updateOverwrite(p.id, {
