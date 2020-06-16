@@ -1,7 +1,5 @@
 const Discord = require('discord.js');
 require('dotenv').config();
-const express = require('express');
-const app = express();
 const config = require('./config.js');
 const Airtable = require('airtable');
 const base = new Airtable({apiKey: process.env.API_KEY}).base(
@@ -15,12 +13,6 @@ function msleep(n) {
 function sleep(n) {
 	msleep(n * 1000);
 }
-
-app.listen(() => console.log('Server started'));
-
-app.use('/', (request, res) => {
-	res.send('Online.');
-});
 
 const client = new Discord.Client();
 
