@@ -50,12 +50,16 @@ const updateChannel = (message, channel, departments = false) => {
 
 							let perms = [
 								{
-									id: config.modRole,
+									id: config.manTeamRole,
 									allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
 								},
 								{
 									id: config.mutedRole,
 									deny: ['SEND_MESSAGES', 'SPEAK', 'ADD_REACTIONS']
+								},
+								{
+									id: config.bot,
+									deny: ['VIEW_CHANNEL', 'SEND_MESSAGES']
 								},
 								{
 									id: config.everyoneRole,
