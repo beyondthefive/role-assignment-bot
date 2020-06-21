@@ -58,8 +58,8 @@ const updateChannel = (message, channel, departments = false) => {
 									deny: ['SEND_MESSAGES', 'SPEAK', 'ADD_REACTIONS']
 								},
 								{
-									id: config.bot,
-									deny: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+									id: config.botRole,
+									allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
 								},
 								{
 									id: config.everyoneRole,
@@ -321,12 +321,11 @@ client.on('message', async message => {
 	const contents = message.content.toLowerCase().split(' ');
 	const cmd = contents[1];
 	const args = contents.slice(2);
-	if (contents[0] === config.prefix) {
+	if (
+		contents[0] === config.prefix &&
+    message.channel.id == config.botChannelID
+	) {
 		if (cmd === 'update') {
-			/* If (!msg.member.user.bot)
-          return msg.channel.send(
-            "You need to be an bot to do that silly!"
-          ); */
 			if (args[1] == 'teachers') {
 				return updateChannel(
 					message,
@@ -343,18 +342,9 @@ client.on('message', async message => {
 		}
 
 		if (cmd === 'records') {
-			if (
-				message.member.user.bot ||
-        message.member.roles.cache.has(config.recordsKeeperRole) ||
-        message.member.roles.cache.has('696820721577492492') || // Admissions team
-        message.member.user.id == '581319977265790986'
-			) {
-				await message.channel.send('Updating records and assigning roles.');
-				await updateUserIDsAndRoles('Students', message.channel);
-				return updateUserIDsAndRoles('Instructors', message.channel);
-			}
-
-			return message.channel.send('You need to be an bot to do that silly!');
+			await message.channel.send('Updating records and assigning roles.');
+			await updateUserIDsAndRoles('Students', message.channel);
+			return updateUserIDsAndRoles('Instructors', message.channel);
 		}
 	}
 });

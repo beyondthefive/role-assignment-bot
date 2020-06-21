@@ -1,7 +1,7 @@
 module.exports = {
 	prefix: 'bt5',
 	guildID: '691976404983611412',
-	logChannelID: '706570014458773755',
+	botChannelID: '706570014458773755',
 	everyoneRole: '691976404983611412',
 	manTeamRole: '696339622900269056',
 	mutedRole: '697163499918590023',
