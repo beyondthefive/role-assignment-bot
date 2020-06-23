@@ -98,7 +98,7 @@ const updateChannel = (message, channel, departments = false) => {
 							if (departments) {
 								perms.push({
 									id: config.orgRepRole,
-									allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+									allow: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'MANAGE_MESSAGES']
 								});
 							}
 
