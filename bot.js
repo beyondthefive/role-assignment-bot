@@ -106,9 +106,7 @@ const updateChannel = (message, channel, departments = false) => {
 								await channelSelect
 									.overwritePermissions(perms)
 									.then(async () => {
-										return message.channel.send(
-											'Permissions updated for ' + channelSelect.toString()
-										);
+										return message.delete();
 									})
 									.catch(async error => {
 										console.log(error);
@@ -131,9 +129,9 @@ const updateChannel = (message, channel, departments = false) => {
 								await channelSelect
 									.overwritePermissions(perms.slice(0, 100))
 									.then(async () => {
-										await message.channel.send(
+										/* Await message.channel.send(
 											'Base permissions updated for ' + channelSelect.toString()
-										);
+										); */
 									})
 									.catch(async error => {
 										console.log(error);
@@ -148,10 +146,10 @@ const updateChannel = (message, channel, departments = false) => {
 										}
 									});
 
-								message.channel.send(
+								/* Message.channel.send(
 									(await channelSelect.toString()) +
                     ' has over 100 permissions overwrites, using alternative method.'
-								);
+								); */
 								perms = perms.slice(100);
 								perms.map(async p => {
 									await channelSelect
@@ -160,12 +158,7 @@ const updateChannel = (message, channel, departments = false) => {
 											SEND_MESSAGES: true
 										})
 										.then(async () => {
-											/* Await message.channel.send(
-                        "Gave permissions to `" +
-                          p.id +
-                          "` in " +
-                          channelSelect.toString()
-					  ) */
+
 										})
 										.catch(async () =>
 											message.channel.send(
@@ -177,9 +170,7 @@ const updateChannel = (message, channel, departments = false) => {
 										);
 								});
 
-								await message.channel.send(
-									'Permissions updated for ' + channelSelect.toString()
-								);
+								await message.delete();
 							}
 						}
 					});
