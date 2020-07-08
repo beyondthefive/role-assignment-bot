@@ -66,25 +66,40 @@ const updateChannel = (message, channel, departments = false) => {
 									deny: ['VIEW_CHANNEL', 'SEND_MESSAGES']
 								}
 							];
-							let combined = [];
+
 							if (!departments) {
-								combined = [...a.teachers, ...a.students].filter(e => {
-									return e != null;
-								});
-							} else {
-								combined = [...a.teachers].filter(e => {
-									return e != null;
+								await a.students.map(async c => {
+									await client.guilds.cache
+										.get(config.guildID)
+										.members.fetch(c)
+										.then(async () => {
+											perms.push({
+												id: c,
+												allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+											});
+										})
+										.catch(async () => {
+											combined.splice(combined.indexOf(c), 1);
+											await message.channel.send(
+												'<@' + c + '> is NOT in the server.'
+											);
+										});
 								});
 							}
 
-							await combined.map(async c => {
+							// Instead of combine, need to push to arr seperately to give teachers manage messages
+							await a.teachers.map(async c => {
 								await client.guilds.cache
 									.get(config.guildID)
 									.members.fetch(c)
 									.then(async () => {
 										perms.push({
 											id: c,
-											allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+											allow: [
+												'VIEW_CHANNEL',
+												'SEND_MESSAGES',
+												'MANAGE_MESSAGES'
+											]
 										});
 									})
 									.catch(async () => {
@@ -157,9 +172,7 @@ const updateChannel = (message, channel, departments = false) => {
 											VIEW_CHANNEL: true,
 											SEND_MESSAGES: true
 										})
-										.then(async () => {
-
-										})
+										.then(async () => {})
 										.catch(async () =>
 											message.channel.send(
 												'ERROR giving permissions to `' +
