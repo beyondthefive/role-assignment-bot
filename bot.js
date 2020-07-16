@@ -68,6 +68,10 @@ const updateChannel = (message, channel, departments = false) => {
 							];
 
 							if (!departments) {
+								perms.push({
+									id: '733432729609437326', // Auditor role
+									allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+								});
 								await a.students.map(async c => {
 									await client.guilds.cache
 										.get(config.guildID)
