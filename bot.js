@@ -83,7 +83,6 @@ const updateChannel = (message, channel, departments = false) => {
 											});
 										})
 										.catch(async () => {
-											combined.splice(combined.indexOf(c), 1);
 											await message.channel.send(
 												'<@' + c + '> is NOT in the server.'
 											);
@@ -96,13 +95,13 @@ const updateChannel = (message, channel, departments = false) => {
 								await client.guilds.cache
 									.get(config.guildID)
 									.members.fetch(c)
-									.then(async () => {
+									.then(() => {
 										perms.push({
 											id: c,
 											allow: [
+												'MANAGE_MESSAGES',
 												'VIEW_CHANNEL',
-												'SEND_MESSAGES',
-												'MANAGE_MESSAGES'
+												'SEND_MESSAGES'
 											]
 										});
 									})
@@ -147,36 +146,22 @@ const updateChannel = (message, channel, departments = false) => {
 								const channelSelect = await client.channels.fetch(i);
 								await channelSelect
 									.overwritePermissions(perms.slice(0, 100))
-									.then(async () => {
-										/* Await message.channel.send(
-											'Base permissions updated for ' + channelSelect.toString()
-										); */
-									})
 									.catch(async error => {
-										console.log(error);
-
-										if (
-											channelSelect.permissionOverwrites.size != perms.length
-										) {
-											await message.channel.send(
-												'Error updating base permissions for ' +
-                          channelSelect.toString()
-											);
-										}
+										await message.channel.send(
+											'Error updating base permissions for ' +
+                        channelSelect.toString()
+										);
 									});
 
-								/* Message.channel.send(
-									(await channelSelect.toString()) +
-                    ' has over 100 permissions overwrites, using alternative method.'
-								); */
 								perms = perms.slice(100);
 								perms.map(async p => {
+									let updatedUserPerms = {};
+									p.allow.map(
+										i =>
+											(updatedUserPerms = {...updatedUserPerms, [i]: true})
+									);
 									await channelSelect
-										.updateOverwrite(p.id, {
-											VIEW_CHANNEL: true,
-											SEND_MESSAGES: true
-										})
-										.then(async () => {})
+										.updateOverwrite(p.id, updatedUserPerms)
 										.catch(async () =>
 											message.channel.send(
 												'ERROR giving permissions to `' +
