@@ -28,7 +28,7 @@ const updateChannel = (message, channel, departments = false) => {
 
 	base(baseType)
 		.select({
-			view: 'Grid view'
+			view: 'Published View'
 		})
 		.eachPage(
 			function page(records, fetchNextPage) {
