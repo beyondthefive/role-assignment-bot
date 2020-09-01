@@ -106,7 +106,6 @@ const updateChannel = (message, channel, departments = false) => {
 										});
 									})
 									.catch(async () => {
-										combined.splice(combined.indexOf(c), 1);
 										await message.channel.send(
 											'<@' + c + '> is NOT in the server.'
 										);
